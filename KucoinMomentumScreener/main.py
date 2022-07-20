@@ -1,36 +1,31 @@
 from kucoin.client import Market
 import pandas as pd
 import numpy as np
-import json
+import time
 
 client = Market(url = 'https://api.kucoin.com')
 
-klines = pd.DataFrame(client.get_kline('MLS-USDT', '1min'))
+klines = pd.DataFrame(client.get_kline('BTC-USDT', '1min'))
 tickers = client.get_all_tickers()
 
 period = 12
 days = 365
 t10_closes = pd.DataFrame(klines.head(period)[2])
-print(t10_closes)
-t10_closes_list = klines.head(period)[2].tolist()
+t10_closes_list = klines.head(period)[2].values.tolist()
+#print(t10_closes_list)
 
-usdt_pairs = []
-i = 0
-for i in range(len(usdt_pairs['ticker'])):
-    if usdt_pairs['ticker'][i]['symbol'][-4:] == 'USDT':
-        tickers.append(usdt_pairs['ticker'][i]['symbol'])
-        i += 1
-    else:
-        continue
+def fetch_tickers():
+    usdt_pairs = []
+    i = 0
+    for i in range(len(usdt_pairs['ticker'])):
+        if usdt_pairs['ticker'][i]['symbol'][-4:] == 'USDT':
+            tickers.append(usdt_pairs['ticker'][i]['symbol'])
+            i += 1
+        else:
+            continue
+    return()
 
-def fetch_data():
-    all_t10_closes = []
-    for i in range(len(usdt_pairs)):
-        2
-
-
-
-def historical_vol():
+def historical_vol(closes_list):
     log_returns = []
     j = 1
     for i in range(len(t10_closes_list)):
@@ -41,9 +36,12 @@ def historical_vol():
         else:
             break
 
-    print(np.std(log_returns))
+    lr_std = np.std(log_returns)
+    annualised_vol = np.sqrt(days) * lr_std
+    return(annualised_vol)
 
-    av = np.sqrt(days) * np.std(log_returns)
-    print(f'{av * 100}%')
+historical_vol(t10_closes_list)
+
+
 
 
